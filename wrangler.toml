@@ -1,0 +1,8 @@
+name = "trade-journal"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "trade-journal-db"
+database_id = "0eb21617-2e9c-4ecd-a40e-fc7248092789"
