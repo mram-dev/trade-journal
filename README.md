@@ -1,5 +1,7 @@
 # Trade Journal
 
+> [فارسی](README.fa.md)
+
 Trading journal on Cloudflare Workers + D1 + React SPA.
 
 ## Setup
