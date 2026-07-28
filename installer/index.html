@@ -199,7 +199,7 @@ const S = {
   logs: [],
 };
 
-const STEPS = 5;
+const STEPS = 6;
 function renderDots() {
   const d = document.getElementById('dots');
   d.innerHTML = Array.from({length: STEPS}, (_, i) =>
@@ -242,14 +242,26 @@ async function fetchWorkerCode() {
 function render() {
   renderDots();
   const app = document.getElementById('app');
-  const steps = [renderConnect, renderToken, renderConfig, renderDeploy, renderDone];
+  const steps = [renderWelcome, renderConnect, renderToken, renderConfig, renderDeploy, renderDone];
   app.innerHTML = `<div class="fade-in">${steps[S.step]()}</div>`;
   app.querySelectorAll('input').forEach(el => {
     el.addEventListener('keydown', e => { if (e.key === 'Enter') el.closest('.card')?.querySelector('.btn-primary')?.click(); });
   });
 }
 
-// ── Step 0: Connection ──
+// ── Step 0: Welcome ──
+function renderWelcome() {
+  return `
+    <div class="card" style="text-align:center">
+      <div style="font-size:3rem;margin-bottom:12px">📊</div>
+      <h2>به نصب‌کننده ترید ژورنال خوش آمدید</h2>
+      <p>این نصب‌کننده، ترید ژورنال را روی حساب Cloudflare شما مستقر می‌کند.<br>
+      نیاز به یک <a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" style="color:var(--accent)">توکن API</a> با مجوزهای D1 و Workers دارید.</p>
+      <button class="btn btn-primary btn-block" style="margin-top:16px" onclick="S.step=1;render()">${tl('start')} ←</button>
+    </div>`;
+}
+
+// ── Step 1: Connection ──
 function renderConnect() {
   return `
     <div class="card">
@@ -269,7 +281,7 @@ function renderConnect() {
         </div>
       </div>
       <div id="connNext" class="hidden" style="margin-top:12px">
-        <button class="btn btn-primary btn-block" onclick="S.step=1;render()">${tl('next')} ←</button>
+        <button class="btn btn-primary btn-block" onclick="S.step=2;render()">${tl('next')} ←</button>
       </div>
     </div>`;
   setTimeout(testConnection, 100);
@@ -324,7 +336,7 @@ function renderToken() {
       </div>
       <div id="tokenStatus"></div>
       <div style="display:flex;gap:8px;margin-top:12px">
-        <button class="btn btn-secondary" onclick="S.step=0;render()">${tl('back')}</button>
+        <button class="btn btn-secondary" onclick="S.step=1;render()">${tl('back')}</button>
         <button class="btn btn-primary" style="flex:1" id="tokenBtn" onclick="validateToken()">${tl('next')} ←</button>
       </div>
     </div>`;
@@ -346,7 +358,7 @@ async function validateToken() {
         S.accountName = acc.result[0].name;
       }
       st.innerHTML = `<div class="status ok">✓ ${tl('tokenOk')} — ${tl('account')}: ${S.accountName || S.accountId}</div>`;
-      setTimeout(() => { S.step = 2; render(); }, 800);
+      setTimeout(() => { S.step = 3; render(); }, 800);
     } else {
       st.innerHTML = `<div class="status err">✗ ${tl('tokenErr')}: ${r.errors?.[0]?.message || ''}</div>`;
       btn.disabled = false;
@@ -371,7 +383,7 @@ function renderConfig() {
         <input type="password" id="pwInput" value="${S.password}" placeholder="${tl('passwordPh')}" />
       </div>
       <div style="display:flex;gap:8px;margin-top:16px">
-        <button class="btn btn-secondary" onclick="S.step=1;render()">${tl('back')}</button>
+        <button class="btn btn-secondary" onclick="S.step=2;render()">${tl('back')}</button>
         <button class="btn btn-primary" style="flex:1" onclick="goDeploy()">${tl('deploy')} 🚀</button>
       </div>
     </div>`;
@@ -399,7 +411,7 @@ function addLog(text, status) {
 async function goDeploy() {
   S.workerName = document.getElementById('wName')?.value?.trim() || 'trade-journal';
   S.password = document.getElementById('pwInput')?.value?.trim() || '';
-  S.step = 3; S.logs = []; render();
+  S.step = 4; S.logs = []; render();
   try { await doDeploy(); } catch (e) { addLog(e.message, 'err'); }
 }
 
@@ -488,7 +500,7 @@ async function doDeploy() {
   } catch {}
 
   addLog(tl('verifying'), 'ok');
-  S.step = 4; render();
+  S.step = 5; render();
 }
 
 // ── Step 4: Success ──
