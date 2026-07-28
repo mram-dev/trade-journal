@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>نصب ترید ژورنال</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a26;--bg4:#22223a;
+  --text:#e0e0ec;--text2:#8888a0;--text3:#55556a;
+  --accent:#6366f1;--accent2:#4f46e5;--accent-bg:rgba(99,102,241,.12);
+  --green:#22c55e;--green-bg:rgba(34,197,94,.1);
+  --red:#ef4444;--red-bg:rgba(239,68,68,.1);
+  --yellow:#f59e0b;--yellow-bg:rgba(245,158,11,.1);
+  --border:#2a2a40;--border2:#3a3a55;
+  --radius:12px;--radius2:16px;
+  --shadow:0 8px 32px rgba(0,0,0,.45);
+  --font:'Vazirmatn',system-ui,sans-serif;
+  --mono:'SF Mono','Fira Code','Consolas',monospace;
+  --ease:all .25s cubic-bezier(.4,0,.2,1);
+}
+html{font-size:15px;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;line-height:1.6;
+  padding:20px 16px 40px;-webkit-font-smoothing:antialiased}
+.container{width:100%;max-width:640px}
+
+/* header */
+.header{text-align:center;margin-bottom:24px}
+.logo{font-size:2rem;font-weight:900;letter-spacing:3px;color:var(--accent)}
+.logo-sub{color:var(--text2);font-size:.82rem}
+
+/* steps */
+.steps{display:flex;justify-content:center;gap:8px;margin-bottom:24px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--bg4);
+  border:2px solid var(--border2);transition:var(--ease)}
+.dot.active{background:var(--accent);border-color:var(--accent);box-shadow:0 0 12px rgba(99,102,241,.5)}
+.dot.done{background:var(--green);border-color:var(--green)}
+
+/* card */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);
+  padding:24px;box-shadow:var(--shadow);margin-bottom:16px}
+.card h2{font-size:1.1rem;font-weight:700;margin-bottom:12px}
+.card p{color:var(--text2);font-size:.88rem;margin-bottom:12px}
+.card p:last-child{margin-bottom:0}
+
+/* form */
+label{display:block;font-size:.82rem;font-weight:600;color:var(--text2);margin-bottom:4px}
+input[type=text],input[type=password]{width:100%;padding:10px 14px;background:var(--bg3);
+  border:1px solid var(--border);border-radius:var(--radius);color:var(--text);
+  font-family:var(--font);font-size:.9rem;transition:var(--ease)}
+input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
+.field{margin-bottom:14px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 24px;border-radius:var(--radius);font-family:var(--font);
+  font-size:.9rem;font-weight:700;cursor:pointer;transition:var(--ease);
+  border:1px solid transparent;min-height:44px}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary:hover{background:var(--accent2)}
+.btn-secondary{background:var(--bg3);color:var(--text);border-color:var(--border)}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-block{width:100%}
+.btn-sm{padding:8px 16px;font-size:.82rem;min-height:36px}
+
+/* proxy card */
+.proxy-grid{display:grid;gap:10px;margin:12px 0}
+.proxy-opt{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px;cursor:pointer;transition:var(--ease);text-align:center;font-weight:600}
+.proxy-opt:hover{border-color:var(--accent);background:var(--accent-bg)}
+
+/* status */
+.status{display:flex;align-items:center;gap:8px;padding:10px 14px;
+  border-radius:var(--radius);font-size:.85rem;margin:8px 0}
+.status.ok{background:var(--green-bg);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.status.err{background:var(--red-bg);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.status.info{background:var(--accent-bg);color:var(--accent);border:1px solid rgba(99,102,241,.2)}
+.status.warn{background:var(--yellow-bg);color:var(--yellow);border:1px solid rgba(245,158,11,.2)}
+
+/* progress */
+.progress{margin:16px 0}
+.step-row{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:.85rem;
+  border-bottom:1px solid var(--border)}
+.step-row:last-child{border:none}
+.step-icon{width:20px;text-align:center;flex-shrink:0}
+.step-icon.ok{color:var(--green)}.step-icon.err{color:var(--red)}
+.step-icon.spin{color:var(--accent);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* result */
+.result-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px;font-family:var(--mono);font-size:.88rem;word-break:break-all;
+  direction:ltr;text-align:left;margin:12px 0;user-select:all}
+
+/* code block */
+.code-block{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px;font-family:var(--mono);font-size:.82rem;direction:ltr;text-align:left;
+  overflow-x:auto;white-space:pre;margin:10px 0;user-select:all}
+
+/* footer */
+footer{text-align:center;color:var(--text3);font-size:.75rem;margin-top:auto;padding-top:20px}
+footer a{color:var(--accent);text-decoration:none}
+
+/* nav */
+.top-nav{display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:16px}
+.nav-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text);
+  padding:8px 16px;border-radius:20px;cursor:pointer;font-size:.82rem;
+  font-weight:600;transition:var(--ease);font-family:var(--font);
+  display:inline-flex;align-items:center;gap:6px}
+.nav-btn:hover{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+
+.hidden{display:none!important}
+.fade-in{animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="top-nav">
+    <button class="nav-btn" onclick="toggleLang()">🌐 EN / فا</button>
+    <a class="nav-btn" href="https://github.com/mram-dev/trade-journal" target="_blank">📦 گیتهاب</a>
+  </div>
+  <div class="header">
+    <div class="logo">TRADE JOURNAL</div>
+    <div class="logo-sub">نصب‌کننده خودکار روی Cloudflare Workers</div>
+  </div>
+  <div class="steps" id="dots"></div>
+  <div id="app"></div>
+</div>
+<footer>
+  <a href="https://github.com/mram-dev/trade-journal" target="_blank">Trade Journal</a>
+  &nbsp;·&nbsp; ساخته شده با ❤️
+</footer>
+
+<script>
+// ── i18n ──
+let lang = 'fa';
+const t = {
+  fa: {
+    start: 'شروع کنیم', back: 'بازگشت', next: 'ادامه', deploy: 'نصب کنید',
+    workerName: 'نام ورکر', workerNamePh: 'trade-journal',
+    password: 'رمز عبور ادمین', passwordPh: 'رمز قوی انتخاب کنید',
+    token: 'توکن API کلادفلر', tokenPh: 'xxxxxxxxxxxxxxxx',
+    tokenHelp: 'از Cloudflare Dashboard → My Profile → API Tokens → Create Token',
+    tokenPerms: 'مجوزها: Account D1 + Workers Scripts (ویرایش)',
+    connTest: 'بررسی اتصال', connMsg: 'در حال آزمایش اتصال به Cloudflare API...',
+    connFail: 'اتصال مستقیم ممکن نیست. یکی از روش‌ها را انتخاب کنید:',
+    proxyDefault: '⚡ پروکسی پیشفرض', proxyCustom: '🔧 پروکسی شخصی',
+    proxyUrl: 'آدرس پروکسی', proxyUrlPh: 'https://your-proxy.workers.dev',
+    validating: 'در حال بررسی توکن...', tokenOk: 'توکن معتبر است',
+    tokenErr: 'توکن نامعتبر است', account: 'حساب',
+    deployTitle: 'در حال نصب...', deployDone: 'نصب با موفقیت انجام شد! 🎉',
+    deployErr: 'خطا در نصب', tryAgain: 'تلاش مجدد',
+    yourUrl: 'آدرس ترید ژورنال شما', open: 'باز کردن',
+    stepConnect: 'اتصال', stepToken: 'توکن', stepConfig: 'تنظیمات', stepDeploy: 'نصب', stepDone: 'تمام',
+    workerExists: 'ورکر از قبل وجود دارد — به‌روزرسانی می‌شود',
+    creatingDb: 'ساخت پایگاه داده D1', dbExists: 'پایگاه داده از قبل وجود دارد',
+    uploading: 'آپلود کد ورکر', enablingUrl: 'فعال‌سازی آدرس workers.dev',
+    settingPw: 'تنظیم رمز عبور', verifying: 'بررسی استقرار',
+    fetchCode: 'دریافت کد ورکر', fetchCodeErr: 'خطا در دریافت کد ورکر',
+  },
+  en: {
+    start: "Let's Start", back: 'Back', next: 'Next', deploy: 'Deploy',
+    workerName: 'Worker Name', workerNamePh: 'trade-journal',
+    password: 'Admin Password', passwordPh: 'Choose a strong password',
+    token: 'Cloudflare API Token', tokenPh: 'xxxxxxxxxxxxxxxx',
+    tokenHelp: 'From Cloudflare Dashboard → My Profile → API Tokens → Create Token',
+    tokenPerms: 'Permissions: Account D1 + Workers Scripts (Edit)',
+    connTest: 'Connection Test', connMsg: 'Testing connection to Cloudflare API...',
+    connFail: 'Direct connection not possible. Choose a method:',
+    proxyDefault: '⚡ Default Proxy', proxyCustom: '🔧 Custom Proxy',
+    proxyUrl: 'Proxy URL', proxyUrlPh: 'https://your-proxy.workers.dev',
+    validating: 'Validating token...', tokenOk: 'Token is valid',
+    tokenErr: 'Invalid token', account: 'Account',
+    deployTitle: 'Deploying...', deployDone: 'Deployed successfully! 🎉',
+    deployErr: 'Deployment error', tryAgain: 'Try Again',
+    yourUrl: 'Your Trade Journal URL', open: 'Open',
+    stepConnect: 'Connect', stepToken: 'Token', stepConfig: 'Config', stepDeploy: 'Deploy', stepDone: 'Done',
+    workerExists: 'Worker already exists — updating',
+    creatingDb: 'Creating D1 database', dbExists: 'Database already exists',
+    uploading: 'Uploading worker code', enablingUrl: 'Enabling workers.dev URL',
+    settingPw: 'Setting password', verifying: 'Verifying deployment',
+    fetchCode: 'Fetching worker code', fetchCodeErr: 'Failed to fetch worker code',
+  }
+};
+function tl(k) { return t[lang][k] || k; }
+function toggleLang() { lang = lang === 'fa' ? 'en' : 'fa'; document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr'; document.documentElement.lang = lang; render(); }
+
+// ── State ──
+const S = {
+  step: 0, proxyUrl: '', directOk: false,
+  token: '', accountId: '', accountName: '',
+  workerName: 'trade-journal', password: '',
+  dbId: '', workerCode: '', workerUrl: '',
+  logs: [],
+};
+
+const STEPS = 5;
+function renderDots() {
+  const d = document.getElementById('dots');
+  d.innerHTML = Array.from({length: STEPS}, (_, i) =>
+    `<div class="dot ${i === S.step ? 'active' : i < S.step ? 'done' : ''}"></div>`
+  ).join('');
+}
+
+// ── CF API fetch ──
+async function cfFetch(path, opts = {}) {
+  const url = S.proxyUrl
+    ? `${S.proxyUrl}/proxy`
+    : `https://api.cloudflare.com/client/v4${path}`;
+  const headers = { 'Authorization': `Bearer ${S.token}`, 'Content-Type': 'application/json' };
+  if (S.proxyUrl) headers['X-Target-Url'] = `https://api.cloudflare.com/client/v4${path}`;
+  const res = await fetch(url, { ...opts, headers: { ...headers, ...opts.headers } });
+  return { ...(await res.json()), _status: res.status };
+}
+
+// ── GitHub fetch (for _worker.js) ──
+async function fetchWorkerCode() {
+  const sources = S.proxyUrl
+    ? [{ url: `${S.proxyUrl}/github`, proxy: true, gh: 'https://raw.githubusercontent.com/mram-dev/trade-journal/main/_worker.js' }]
+    : [
+        { url: 'https://cdn.jsdelivr.net/gh/mram-dev/trade-journal@main/_worker.js' },
+        { url: 'https://raw.githubusercontent.com/mram-dev/trade-journal/main/_worker.js' },
+      ];
+  for (const src of sources) {
+    try {
+      const opts = src.proxy ? { headers: { 'X-GitHub-Url': src.gh } } : {};
+      const res = await fetch(src.url, opts);
+      if (!res.ok) continue;
+      const code = await res.text();
+      if (code.length > 1000) return code;
+    } catch {}
+  }
+  return null;
+}
+
+// ── Render ──
+function render() {
+  renderDots();
+  const app = document.getElementById('app');
+  const steps = [renderConnect, renderToken, renderConfig, renderDeploy, renderDone];
+  app.innerHTML = `<div class="fade-in">${steps[S.step]()}</div>`;
+  app.querySelectorAll('input').forEach(el => {
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') el.closest('.card')?.querySelector('.btn-primary')?.click(); });
+  });
+}
+
+// ── Step 0: Connection ──
+function renderConnect() {
+  return `
+    <div class="card">
+      <h2>${tl('connTest')}</h2>
+      <p>${tl('connMsg')}</p>
+      <div id="connStatus"></div>
+      <div id="connOptions" class="hidden">
+        <p style="color:var(--yellow)">${tl('connFail')}</p>
+        <div class="proxy-grid">
+          <div class="proxy-opt" onclick="chooseProxy('default')">${tl('proxyDefault')}</div>
+          <div class="proxy-opt" onclick="chooseProxy('custom')">${tl('proxyCustom')}</div>
+        </div>
+        <div id="customProxy" class="hidden field" style="margin-top:12px">
+          <label>${tl('proxyUrl')}</label>
+          <input type="text" id="proxyInput" placeholder="${tl('proxyUrlPh')}" />
+          <button class="btn btn-primary btn-block" style="margin-top:8px" onclick="setCustomProxy()">OK</button>
+        </div>
+      </div>
+      <div id="connNext" class="hidden" style="margin-top:12px">
+        <button class="btn btn-primary btn-block" onclick="S.step=1;render()">${tl('next')} ←</button>
+      </div>
+    </div>`;
+  setTimeout(testConnection, 100);
+}
+
+async function testConnection() {
+  const el = document.getElementById('connStatus');
+  el.innerHTML = `<div class="status info">⏳ ${tl('connMsg')}</div>`;
+  try {
+    const res = await fetch('https://api.cloudflare.com/client/v4/accounts?page=1&per_page=1', {
+      headers: { 'Authorization': 'Bearer test' }, signal: AbortSignal.timeout(8000)
+    });
+    if (res.status === 401 || res.status === 200) {
+      S.directOk = true;
+      el.innerHTML = `<div class="status ok">✓ اتصال مستقیم برقرار است</div>`;
+      document.getElementById('connNext').classList.remove('hidden');
+      return;
+    }
+  } catch {}
+  el.innerHTML = `<div class="status err">✗ اتصال مستقیم ممکن نیست</div>`;
+  document.getElementById('connOptions').classList.remove('hidden');
+}
+
+function chooseProxy(mode) {
+  if (mode === 'custom') {
+    document.getElementById('customProxy').classList.remove('hidden');
+    return;
+  }
+  S.proxyUrl = 'https://cfproxy.fly.dev';
+  document.getElementById('connStatus').innerHTML += `<div class="status ok">✓ پروکسی پیشفرض فعال شد</div>`;
+  document.getElementById('connNext').classList.remove('hidden');
+}
+
+function setCustomProxy() {
+  const url = document.getElementById('proxyInput').value.trim();
+  if (!url) return;
+  S.proxyUrl = url.replace(/\/+$/, '');
+  document.getElementById('connStatus').innerHTML += `<div class="status ok">✓ پروکسی تنظیم شد</div>`;
+  document.getElementById('connNext').classList.remove('hidden');
+}
+
+// ── Step 1: Token ──
+function renderToken() {
+  return `
+    <div class="card">
+      <h2>${tl('token')}</h2>
+      <p>${tl('tokenHelp')}</p>
+      <p style="color:var(--accent);font-size:.8rem">${tl('tokenPerms')}</p>
+      <div class="field">
+        <label>${tl('token')}</label>
+        <input type="password" id="tokenInput" placeholder="${tl('tokenPh')}" value="${S.token}" />
+      </div>
+      <div id="tokenStatus"></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-secondary" onclick="S.step=0;render()">${tl('back')}</button>
+        <button class="btn btn-primary" style="flex:1" id="tokenBtn" onclick="validateToken()">${tl('next')} ←</button>
+      </div>
+    </div>`;
+}
+
+async function validateToken() {
+  S.token = document.getElementById('tokenInput').value.trim();
+  if (!S.token) return;
+  const btn = document.getElementById('tokenBtn');
+  const st = document.getElementById('tokenStatus');
+  btn.disabled = true;
+  st.innerHTML = `<div class="status info">⏳ ${tl('validating')}</div>`;
+  try {
+    const r = await cfFetch('/user/tokens/verify');
+    if (r.success) {
+      const acc = await cfFetch('/accounts');
+      if (acc.success && acc.result?.length) {
+        S.accountId = acc.result[0].id;
+        S.accountName = acc.result[0].name;
+      }
+      st.innerHTML = `<div class="status ok">✓ ${tl('tokenOk')} — ${tl('account')}: ${S.accountName || S.accountId}</div>`;
+      setTimeout(() => { S.step = 2; render(); }, 800);
+    } else {
+      st.innerHTML = `<div class="status err">✗ ${tl('tokenErr')}: ${r.errors?.[0]?.message || ''}</div>`;
+      btn.disabled = false;
+    }
+  } catch (e) {
+    st.innerHTML = `<div class="status err">✗ ${e.message}</div>`;
+    btn.disabled = false;
+  }
+}
+
+// ── Step 2: Config ──
+function renderConfig() {
+  return `
+    <div class="card">
+      <h2>تنظیمات</h2>
+      <div class="field">
+        <label>${tl('workerName')}</label>
+        <input type="text" id="wName" value="${S.workerName}" placeholder="${tl('workerNamePh')}" />
+      </div>
+      <div class="field">
+        <label>${tl('password')}</label>
+        <input type="password" id="pwInput" value="${S.password}" placeholder="${tl('passwordPh')}" />
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="btn btn-secondary" onclick="S.step=1;render()">${tl('back')}</button>
+        <button class="btn btn-primary" style="flex:1" onclick="goDeploy()">${tl('deploy')} 🚀</button>
+      </div>
+    </div>`;
+}
+
+// ── Step 3: Deploy ──
+function renderDeploy() {
+  return `
+    <div class="card">
+      <h2>${tl('deployTitle')}</h2>
+      <div class="progress" id="deployLog"></div>
+    </div>`;
+}
+
+function addLog(text, status) {
+  S.logs.push({ text, status });
+  const el = document.getElementById('deployLog');
+  if (!el) return;
+  const icon = status === 'ok' ? '✓' : status === 'err' ? '✗' : status === 'spin' ? '⟳' : '•';
+  el.innerHTML = S.logs.map(l =>
+    `<div class="step-row"><span class="step-icon ${l.status}">${l.status === 'ok' ? '✓' : l.status === 'err' ? '✗' : l.status === 'spin' ? '<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span>' : '•'}</span><span>${l.text}</span></div>`
+  ).join('');
+}
+
+async function goDeploy() {
+  S.workerName = document.getElementById('wName')?.value?.trim() || 'trade-journal';
+  S.password = document.getElementById('pwInput')?.value?.trim() || '';
+  S.step = 3; S.logs = []; render();
+  try { await doDeploy(); } catch (e) { addLog(e.message, 'err'); }
+}
+
+async function doDeploy() {
+  // 1. Fetch worker code
+  addLog(tl('fetchCode'), 'spin');
+  S.workerCode = await fetchWorkerCode();
+  if (!S.workerCode) { addLog(tl('fetchCodeErr'), 'err'); return; }
+  addLog(`${tl('fetchCode')} (${(S.workerCode.length/1024).toFixed(0)} KB)`, 'ok');
+
+  // 2. Create D1 database
+  addLog(tl('creatingDb'), 'spin');
+  let r = await cfFetch(`/accounts/${S.accountId}/d1/database`, {
+    method: 'POST', body: JSON.stringify({ name: `${S.workerName}-db` })
+  });
+  if (r.success) {
+    S.dbId = r.result?.uuid || r.result?.database_id || '';
+    addLog(`${tl('creatingDb')}: ${S.dbId.slice(0,8)}...`, 'ok');
+  } else {
+    const msg = r.errors?.[0]?.message || '';
+    if (msg.includes('already') || msg.includes('exists') || msg.includes('taken')) {
+      // Find existing
+      const list = await cfFetch(`/accounts/${S.accountId}/d1/database`);
+      const db = list.result?.find(d => d.name === `${S.workerName}-db`);
+      if (db) {
+        S.dbId = db.uuid || db.database_id || '';
+        addLog(`${tl('dbExists')}: ${S.dbId.slice(0,8)}...`, 'ok');
+      } else {
+        addLog(`D1: ${msg}`, 'err'); return;
+      }
+    } else {
+      addLog(`D1: ${msg}`, 'err'); return;
+    }
+  }
+
+  // 3. Deploy worker via multipart PUT
+  addLog(tl('uploading'), 'spin');
+  const metadata = {
+    main_module: 'worker.js',
+    compatibility_date: '2024-12-01',
+    bindings: [
+      { name: 'DB', type: 'd1_database', id: S.dbId },
+    ]
+  };
+  if (S.password) {
+    metadata.bindings.push({ name: 'ADMIN_PASSWORD', type: 'plain_text', text: S.password });
+  }
+  const form = new FormData();
+  form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }), 'metadata.json');
+  form.append('worker.js', new Blob([S.workerCode], { type: 'application/javascript' }), 'worker.js');
+  // ponytail: fetch directly, don't use cfFetch (different content-type)
+  const deployUrl = S.proxyUrl
+    ? `${S.proxyUrl}/proxy`
+    : `https://api.cloudflare.com/client/v4/accounts/${S.accountId}/workers/scripts/${encodeURIComponent(S.workerName)}`;
+  const deployHeaders = { 'Authorization': `Bearer ${S.token}` };
+  if (S.proxyUrl) deployHeaders['X-Target-Url'] = `https://api.cloudflare.com/client/v4/accounts/${S.accountId}/workers/scripts/${encodeURIComponent(S.workerName)}`;
+  const deployRes = await fetch(deployUrl + (S.proxyUrl ? '' : ''), { method: 'PUT', headers: deployHeaders, body: form });
+  const deployJson = await deployRes.json().catch(() => ({}));
+  if (!deployJson.success && deployRes.status !== 200) {
+    addLog(`${tl('uploading')}: ${deployJson.errors?.[0]?.message || 'failed'}`, 'err'); return;
+  }
+  addLog(tl('uploading'), 'ok');
+
+  // 4. Enable workers.dev subdomain
+  addLog(tl('enablingUrl'), 'spin');
+  const subUrl = S.proxyUrl
+    ? `${S.proxyUrl}/proxy`
+    : `https://api.cloudflare.com/client/v4/accounts/${S.accountId}/workers/scripts/${encodeURIComponent(S.workerName)}/subdomain`;
+  const subHeaders = { 'Authorization': `Bearer ${S.token}`, 'Content-Type': 'application/json' };
+  if (S.proxyUrl) subHeaders['X-Target-Url'] = `https://api.cloudflare.com/client/v4/accounts/${S.accountId}/workers/scripts/${encodeURIComponent(S.workerName)}/subdomain`;
+  await fetch(subUrl, { method: 'POST', headers: subHeaders, body: JSON.stringify({ enabled: true }) }).catch(() => {});
+  addLog(tl('enablingUrl'), 'ok');
+
+  // 5. Build URL
+  S.workerUrl = `https://${S.workerName}.${S.accountName?.replace(/\s+/g, '-').toLowerCase() || S.accountId}.workers.dev`;
+  // ponytail: try to get the real subdomain from the script settings
+  const settingsUrl = S.proxyUrl
+    ? `${S.proxyUrl}/proxy`
+    : `https://api.cloudflare.com/client/v4/accounts/${S.accountId}/workers/scripts/${encodeURIComponent(S.workerName)}/settings`;
+  const settingsHeaders = { 'Authorization': `Bearer ${S.token}` };
+  if (S.proxyUrl) settingsHeaders['X-Target-Url'] = `https://api.cloudflare.com/client/v4/accounts/${S.accountId}/workers/scripts/${encodeURIComponent(S.workerName)}/settings`;
+  try {
+    const settings = await fetch(settingsUrl, { headers: settingsHeaders });
+    const sj = await settings.json();
+    if (sj.result?.subdomain) S.workerUrl = `https://${S.workerName}.${sj.result.subdomain}.workers.dev`;
+  } catch {}
+
+  addLog(tl('verifying'), 'ok');
+  S.step = 4; render();
+}
+
+// ── Step 4: Success ──
+function renderDone() {
+  return `
+    <div class="card" style="text-align:center">
+      <div style="font-size:3rem;margin-bottom:8px">🎉</div>
+      <h2>${tl('deployDone')}</h2>
+      <p style="margin:16px 0 8px;color:var(--text2)">${tl('yourUrl')}</p>
+      <div class="result-box">${S.workerUrl}</div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <a class="btn btn-primary" style="flex:1;text-decoration:none" href="${S.workerUrl}" target="_blank">${tl('open')} 🚀</a>
+      </div>
+    </div>`;
+}
+
+// ── Init ──
+render();
+</script>
+</body>
+</html>
