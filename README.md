@@ -4,6 +4,10 @@
 
 Trading journal on Cloudflare Workers + D1 + React SPA.
 
+## 🔗 نصب خودکار / One-Click Install
+
+**[👉 نصب‌کننده خودکار](https://mram-dev.github.io/trade-journal/)**
+
 ## Setup
 
 ```bash

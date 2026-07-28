@@ -1,6 +1,14 @@
 # ترید ژورنال
 
+> [English](README.md)
+
 ژورنال معاملات روی Cloudflare Workers + D1 + React SPA.
+
+## 🔗 نصب خودکار
+
+**[👉 نصب‌کننده خودکار](https://mram-dev.github.io/trade-journal/)**
+
+با این نصب‌کننده بدون نیاز به خط فرمان، ترید ژورنال رو روی حساب Cloudflare خودت نصب کن.
 
 ## نصب و دیپلوی
 
