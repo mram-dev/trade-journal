@@ -274,34 +274,45 @@ function renderConnect() {
         <div class="proxy-grid">
           <div class="proxy-opt" onclick="chooseProxy('default')">${tl('proxyDefault')}</div>
           <div class="proxy-opt" onclick="chooseProxy('custom')">${tl('proxyCustom')}</div>
-       </div>
+        </div>
         <div id="customProxy" class="hidden field" style="margin-top:12px">
           <label>${tl('proxyUrl')}</label>
           <input type="text" id="proxyInput" placeholder="${tl('proxyUrlPh')}" />
           <button class="btn btn-primary btn-block" style="margin-top:8px" onclick="setCustomProxy()">OK</button>
-       </div>
-     </div>
+        </div>
+      </div>
       <div id="connNext" class="hidden" style="margin-top:12px">
         <button class="btn btn-primary btn-block" onclick="S.step=2;render()">${tl('next')} ←</button>
-     </div>
-   </div>`;
+      </div>
+    </div>`;
 }
 
 async function testConnection() {
   const el = document.getElementById('connStatus');
   el.innerHTML = `<div class="status info">⏳ ${tl('connMsg')}</div>`;
+  // Always set default proxy first
+  S.proxyUrl = S.proxyUrl || 'https://tj-installer-proxy.mramdev.workers.dev';
   try {
-    const res = await fetch('https://api.cloudflare.com/client/v4/accounts?page=1&per_page=1', {
-      headers: { 'Authorization': 'Bearer test' }, signal: AbortSignal.timeout(8000)
+    const r = await cfFetch('/user/tokens/verify');
+    if (r._status === 401 || r._status === 200 || r._status === 403) {
+      el.innerHTML = `<div class="status ok">✓ اتصال برقرار است (از طریق پروکسی)</div>`;
+      document.getElementById('connNext').classList.remove('hidden');
+      return;
+    }
+  } catch {}
+  // Proxy failed, try direct
+  S.proxyUrl = '';
+  try {
+    const res = await fetch('https://api.cloudflare.com/client/v4/user', {
+      headers: { 'Authorization': 'Bearer test' }, signal: AbortSignal.timeout(5000)
     });
     if (res.status === 401 || res.status === 200) {
-      S.directOk = true;
       el.innerHTML = `<div class="status ok">✓ اتصال مستقیم برقرار است</div>`;
       document.getElementById('connNext').classList.remove('hidden');
       return;
     }
   } catch {}
-  el.innerHTML = `<div class="status err">✗ اتصال مستقیم ممکن نیست</div>`;
+  el.innerHTML = `<div class="status err">✗ اتصال ممکن نیست</div>`;
   document.getElementById('connOptions').classList.remove('hidden');
 }
 
@@ -310,7 +321,7 @@ function chooseProxy(mode) {
     document.getElementById('customProxy').classList.remove('hidden');
     return;
   }
-  S.proxyUrl = 'https://cfproxy.fly.dev';
+  S.proxyUrl = 'https://tj-installer-proxy.mramdev.workers.dev';
   document.getElementById('connStatus').innerHTML += `<div class="status ok">✓ پروکسی پیشفرض فعال شد</div>`;
   document.getElementById('connNext').classList.remove('hidden');
 }
