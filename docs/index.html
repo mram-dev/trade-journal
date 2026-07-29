@@ -221,7 +221,7 @@ async function cfFetch(path, opts = {}) {
 // ── GitHub fetch (for _worker.js) ──
 async function fetchWorkerCode() {
   const sources = S.proxyUrl
-    ? [{ url: `${S.proxyUrl}/github`, proxy: true, gh: 'https://raw.githubusercontent.com/mram-dev/trade-journal/main/_worker.js' }]
+    ? [{ url: `${S.proxyUrl}/proxy`, proxy: true, gh: 'https://raw.githubusercontent.com/mram-dev/trade-journal/main/_worker.js' }]
     : [
         { url: 'https://cdn.jsdelivr.net/gh/mram-dev/trade-journal@main/_worker.js' },
         { url: 'https://raw.githubusercontent.com/mram-dev/trade-journal/main/_worker.js' },
