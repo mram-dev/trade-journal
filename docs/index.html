@@ -266,17 +266,17 @@ function renderConnect() {
   setTimeout(testConnection, 100);
   return `
     <div class="card">
-      <h2>${tl('connTest')</h2>
-      <p>${tl('connMsg')</p>
+      <h2>${tl('connTest')}</h2>
+      <p>${tl('connMsg')}</p>
       <div id="connStatus</div>
       <div id="connOptions" class="hidden">
-        <p style="color:var(--yellow)">${tl('connFail')</p>
+        <p style="color:var(--yellow)">${tl('connFail')}</p>
         <div class="proxy-grid">
-          <div class="proxy-opt" onclick="chooseProxy('default')">${tl('proxyDefault')</div>
-          <div class="proxy-opt" onclick="chooseProxy('custom')">${tl('proxyCustom')</div>
+          <div class="proxy-opt" onclick="chooseProxy('default')">${tl('proxyDefault')}</div>
+          <div class="proxy-opt" onclick="chooseProxy('custom')">${tl('proxyCustom')}</div>
        </div>
         <div id="customProxy" class="hidden field" style="margin-top:12px">
-          <label>${tl('proxyUrl')</label>
+          <label>${tl('proxyUrl')}</label>
           <input type="text" id="proxyInput" placeholder="${tl('proxyUrlPh')}" />
           <button class="btn btn-primary btn-block" style="margin-top:8px" onclick="setCustomProxy()">OK</button>
        </div>
